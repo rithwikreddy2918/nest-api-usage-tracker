@@ -51,5 +51,19 @@ export class UsersService {
 
     return user;
   }
+  // UPDATE USER
+    async update(id: number, email: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+       });
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+      }
+
+    user.email = email;
+    await this.userRepository.save(user);
+
+     return { message: 'User updated successfully' };
+}
 }
