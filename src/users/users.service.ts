@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { NotFoundException } from '@nestjs/common';
 import { ConflictException } from '@nestjs/common';
 @Injectable()
 export class UsersService {
@@ -38,4 +39,17 @@ export class UsersService {
       select: ['id', 'email'],
     });
   }
+    async findOne(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'email'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
 }
