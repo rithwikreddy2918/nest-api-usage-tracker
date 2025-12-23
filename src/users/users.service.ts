@@ -65,5 +65,16 @@ export class UsersService {
     await this.userRepository.save(user);
 
      return { message: 'User updated successfully' };
+  }
+    // DELETE USER
+async remove(id: number) {
+  const result = await this.userRepository.delete(id);
+
+  if (result.affected === 0) {
+    throw new NotFoundException('User not found');
+  }
+
+  return { message: 'User deleted successfully' };
 }
+
 }
