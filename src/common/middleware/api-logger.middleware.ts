@@ -15,7 +15,6 @@ export class ApiLoggerMiddleware implements NestMiddleware {
 
     const authHeader = req.headers.authorization;
 
-    // 🔥 EXTRACT USER ID BEFORE finish
     if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
       try {
         const token = authHeader.slice(7);

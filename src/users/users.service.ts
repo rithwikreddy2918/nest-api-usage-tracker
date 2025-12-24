@@ -16,23 +16,35 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email } });
   }
 
- async create(email: string, password: string) {
-  const existingUser = await this.userRepository.findOne({
-    where: { email },
-  });
+  async create(email: string, password: string) {
+    try {
+      const existingUser = await this.userRepository.findOne({
+        where: { email },
+        });
 
-  if (existingUser) {
-    throw new ConflictException('Email already registered');
+    if (existingUser) {
+      throw new ConflictException('Email already registered');
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = this.userRepository.create({
+      email,
+      password: hashed,
+    });
+
+    return await this.userRepository.save(user);
+  } catch (error) {
+    
+    if (error.code === '23505') {
+      throw new ConflictException('Email already registered');
+    }
+
+    throw error;
   }
+}
 
-  const hashed = await bcrypt.hash(password, 10);
-
-  const user = this.userRepository.create({
-    email,
-    password: hashed,
-  });
-    return this.userRepository.save(user);
-  }
+  
 
   findAll() {
     return this.userRepository.find({

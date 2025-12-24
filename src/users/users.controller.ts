@@ -8,11 +8,11 @@ import { Delete } from '@nestjs/common';
 
 
 @Controller('users')
-@UseGuards(JwtAuthGuard) 
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // GET /users
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -24,19 +24,21 @@ export class UsersController {
     return this.usersService.create(dto.email, dto.password);
   }
   // GET /users/:id
-   @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
   //  PUT /users/:id (UPDATE)
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
+  update(@Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserDto,
   ) {
     return this.usersService.update(id, dto.email);
   }
-   // ✅ DELETE /users/:id
+   //  DELETE /users/:id
+   @UseGuards(JwtAuthGuard)
    @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
